@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bank Account Management</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #74ebd5, #acb6e5);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: white;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      width: 400px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    input[type="number"] {
+      width: 80%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 20px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 85%;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #output {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f2f2f2;
+      border-radius: 8px;
+      font-size: 15px;
+      color: #333;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Bank Account</h1>
+    <button onclick="viewDetails()">View Account Details</button><br>
+    <input id="depositAmount" type="number" placeholder="Deposit Amount">
+    <button onclick="deposit()">Deposit</button><br>
+    <input id="withdrawAmount" type="number" placeholder="Withdraw Amount">
+    <button onclick="withdraw()">Withdraw</button><br>
+    <div id="output"></div>
+  </div>
+
+  <script>
+    const API = "http://localhost:8080/api/account";
+
+    async function viewDetails() {
+      const res = await fetch(API);
+      const data = await res.json();
+      document.getElementById('output').innerText =
+        `Account Number: ${data.accountNumber}
+Account Holder: ${data.accountHolder}
+Balance: ₹${data.balance}`;
+    }
+
+    async function deposit() {
+      const amount = document.getElementById('depositAmount').value;
+      const res = await fetch(`${API}/deposit?amount=${amount}`, { method: 'POST' });
+      const msg = await res.text();
+      alert(msg);
+      viewDetails();
+    }
+
+    async function withdraw() {
+      const amount = document.getElementById('withdrawAmount').value;
+      const res = await fetch(`${API}/withdraw?amount=${amount}`, { method: 'POST' });
+      const msg = await res.text();
+      alert(msg);
+      viewDetails();
+    }
+  </script>
+</body>
+</html>
